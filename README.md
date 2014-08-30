@@ -4,7 +4,10 @@ common_adapter_viewholder
 
 # CommonAdapter的使用
 
-## Fragment布局
+## 介绍与使用
+  一般我们在项目中使用到ListView和GridView组件都是都会用到Adapter，比较多的情况是继承自BaseAdapter，然后实现getCount、getView等方法，再使用ViewHolder来提高一下效率.我们看下面一个例子 :
+  
+### ListView布局文件
 fragment_main.xml :
 ```xml
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -25,7 +28,7 @@ fragment_main.xml :
 </RelativeLayout>
 ```   
 
-## ListView每项的布局
+### ListView子项的布局文件
 listview_item_layout.xml :
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -33,12 +36,6 @@ listview_item_layout.xml :
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal" >
-
-    <ImageView
-        android:id="@+id/my_imageview"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:contentDescription="@string/app_name" />
 
     <TextView
         android:id="@+id/my_textview"
@@ -49,84 +46,84 @@ listview_item_layout.xml :
 
 </LinearLayout>
 ```    
-
-## MainActivity中加载的Fragment 
+  
+### 我们通常情况下要写的Adapter代码
 ```java
-public static class PlaceholderFragment extends Fragment {
+public class NormalAdapter extends BaseAdapter {
 
-        public PlaceholderFragment() {
+    Context mContext;
+
+    LayoutInflater mInflater;
+
+    List<String> mDataList;
+
+    /**
+     * @param context
+     * @param data
+     */
+    public NormalAdapter(Context context, List<String> data) {
+        mContext = context;
+        mInflater = LayoutInflater.from(context);
+        mDataList = data;
+    }
+
+    @Override
+    public int getCount() {
+        return mDataList.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return mDataList.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder viewHolder = null;
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.listview_item_layout, null, false);
+            viewHolder = new ViewHolder();
+            viewHolder.mTextView = (TextView) convertView.findViewById(R.id.my_textview);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            // 获取ListView实例
-            ListView listView = (ListView) rootView.findViewById(R.id.my_listview);
-            // 设置CommonAdapter,泛型参数为ListViewImte
-            listView.setAdapter(new CommonAdapter<ListViewItem>(getActivity(),
+        viewHolder.mTextView.setText((String) getItem(position));
+        return convertView;
+    }
+
+    static class ViewHolder {
+        TextView mTextView;
+    }
+
+}
+```      
+
+   然而写过多遍以后我们发现我们总是重复地在写这些getCount、getItem、getView方法以及ViewHolder，导致了很多重复工作，于是我把这些重复工作抽象起来(以前也有在github上看到这样的通用Adapter实现)便于自己使用，也是自己学习的一个过程。下面我们看看使用CommonAdapter后我们做与上面同样的工作需要怎么写。
+   
+### 使用CommonAdapter后要写的代码
+```java
+CommonAdapter<String> listAdapter = new CommonAdapter<String>(getActivity(),
                     R.layout.listview_item_layout, mockListViewItems()) {
 
                 @Override
-                protected void fillItemData(CommonViewHolder viewHolder, ListViewItem item) {
-                    // 设置图片
-                    viewHolder.setImageForView(R.id.my_imageview, item.mDrawableId);
+                protected void fillItemData(CommonViewHolder viewHolder, String item) {
                     // 设置text
-                    viewHolder.setTextForTextView(R.id.my_textview, item.mName);
+                    viewHolder.setTextForTextView(R.id.my_textview, item);
                 }
-            });
-            return rootView;
-        }
-	
-		// 模拟一些数据
-        private List<ListViewItem> mockListViewItems() {
-            List<ListViewItem> dataItems = new ArrayList<MainActivity.ListViewItem>();
-            dataItems.add(new ListViewItem(R.drawable.girl_96, "girl_96.png"));
-            dataItems.add(new ListViewItem(R.drawable.fire_96, "fire_96.png"));
-            dataItems.add(new ListViewItem(R.drawable.grimace_96, "grimace_96.png"));
-            dataItems.add(new ListViewItem(R.drawable.laugh_96, "laugh_96.png"));
-            return dataItems;
-        }
-    }
-
-    /**
-     * ListView每项对应的数据项
-     * @author mrsimple
-     */
-    static class ListViewItem {
-        public int mDrawableId;
-        public String mName;
-
-        /**
-         * @param id
-         * @param name
-         */
-        public ListViewItem(int id, String name) {
-            mDrawableId = id;
-            mName = name;
-        }
-
-    }
+            }
 ```    
+   可以看到，我们的代码量减少了很多，如果一个项目中有好几个ListView、GridView等组件，我们就不需要重复做那么多工作了。
 
-MainActivity的onCreate方法 : 
-```java
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
-        }
-    }
-```    
-
-
-## 运行demo看效果吧 
+### 运行demo看效果吧 
 	   
+
 
 ## ViewFinder的使用
 
