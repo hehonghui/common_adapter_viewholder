@@ -34,13 +34,12 @@ package com.uit.commons;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.uit.commons.utils.ViewFinder;
 
 /**
  * 这是一个通用的ViewHolder, 将会装载AbsListView子类的item View, 并且将item
@@ -49,20 +48,6 @@ import android.widget.TextView;
  * @author mrsimple
  */
 public class CommonViewHolder {
-    /**
-     * Context
-     */
-    Context mContext;
-
-    /**
-     * 每项的View的sub view Map
-     */
-    private SparseArray<View> mViewMap = new SparseArray<View>();
-
-    /**
-     * ListView、GridView或者其他AbsListVew子类的 Item View
-     */
-    View mConvertView;
 
     /**
      * 构造函数
@@ -71,9 +56,10 @@ public class CommonViewHolder {
      * @param layoutId ListView、GridView或者其他AbsListVew子类的 Item View的资源布局id
      */
     protected CommonViewHolder(Context context, int layoutId) {
-        mContext = context;
-        mConvertView = LayoutInflater.from(mContext).inflate(layoutId, null, false);
-        mConvertView.setTag(this);
+        // 初始化布局, 装载ContentView
+        ViewFinder.initContentView(context, layoutId);
+        // 将ViewHolder存储在ContentView的tag中
+        ViewFinder.getContentView().setTag(this);
     }
 
     /**
@@ -97,26 +83,7 @@ public class CommonViewHolder {
      * @return 当前项的convertView, 在构造函数中装载
      */
     public View getConvertView() {
-        return mConvertView;
-    }
-
-    /**
-     * 获取convertView中的子view, 该函数为泛型函数,首先从mViewMap中找该view是否已经缓存,如果已经缓存则直接使用缓存中的；
-     * 否则使用convertView.findViewById(textVewId)来获取该view，再将其存储到mViewMap中
-     * 
-     * @param viewId 子视图的id, 例如R.id.my_title等
-     * @see setTextForTextView
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends View> T findViewById(int viewId) {
-        View targetView = mViewMap.get(viewId);
-        if (targetView == null) {
-            targetView = mConvertView.findViewById(viewId);
-            mViewMap.put(viewId, targetView);
-        }
-
-        return targetView == null ? null : (T) targetView;
+        return ViewFinder.getContentView();
     }
 
     /**
@@ -126,7 +93,7 @@ public class CommonViewHolder {
      * @param text 要设置的文本内容
      */
     public void setTextForTextView(int textViewId, CharSequence text) {
-        TextView textView = this.findViewById(textViewId);
+        TextView textView = ViewFinder.findViewById(textViewId);
         if (textView != null) {
             textView.setText(text);
         }
@@ -139,8 +106,10 @@ public class CommonViewHolder {
      * @param drawableId Drawable图片的id, 例如R.drawable.my_photo
      */
     public void setImageForView(int imageViewId, int drawableId) {
-        this.setImageForView(imageViewId,
-                BitmapFactory.decodeResource(mContext.getResources(), drawableId));
+        ImageView imageView = ViewFinder.findViewById(imageViewId);
+        if (imageView != null) {
+            imageView.setImageResource(drawableId);
+        }
     }
 
     /**
@@ -150,7 +119,7 @@ public class CommonViewHolder {
      * @param bmp Bitmap图片
      */
     public void setImageForView(int imageViewId, Bitmap bmp) {
-        ImageView imageView = this.findViewById(imageViewId);
+        ImageView imageView = ViewFinder.findViewById(imageViewId);
         if (imageView != null) {
             imageView.setImageBitmap(bmp);
         }
@@ -163,7 +132,7 @@ public class CommonViewHolder {
      * @param isCheck 是否选中
      */
     public void setCheckForCheckBox(int checkViewId, boolean isCheck) {
-        CheckBox checkBox = this.findViewById(checkViewId);
+        CheckBox checkBox = ViewFinder.findViewById(checkViewId);
         if (checkBox != null) {
             checkBox.setChecked(isCheck);
         }

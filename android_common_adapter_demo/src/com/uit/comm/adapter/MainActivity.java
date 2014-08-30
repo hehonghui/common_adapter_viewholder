@@ -9,10 +9,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.uit.commons.CommonAdapter;
 import com.uit.commons.CommonViewHolder;
+import com.uit.commons.utils.ViewFinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,9 +66,17 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+            // View rootView = inflater.inflate(R.layout.fragment_main,
+            // container, false);
+            // // 获取ListView对象
+            // ListView listView = (ListView)
+            // rootView.findViewById(R.id.my_listview);
+
+            // 初始化ViewFinder, 将Context和该页面布局id作为参数
+            ViewFinder.initContentView(getActivity(), R.layout.fragment_main);
             // 获取ListView对象
-            ListView listView = (ListView) rootView.findViewById(R.id.my_listview);
+            final ListView listView = ViewFinder.findViewById(R.id.my_listview);
             // 设置CommonAdapter
             listView.setAdapter(new CommonAdapter<ListViewItem>(getActivity(),
                     R.layout.listview_item_layout, mockListViewItems()) {
@@ -77,7 +89,17 @@ public class MainActivity extends ActionBarActivity {
                     viewHolder.setTextForTextView(R.id.my_textview, item.mName);
                 }
             });
-            return rootView;
+            listView.setOnItemClickListener(new OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(getActivity(),
+                            "click " + listView.getAdapter().getItem(position), Toast.LENGTH_SHORT)
+                            .show();
+                }
+
+            });
+            return ViewFinder.getContentView();
         }
 
         /**
@@ -111,6 +133,11 @@ public class MainActivity extends ActionBarActivity {
         public ListViewItem(int id, String name) {
             mDrawableId = id;
             mName = name;
+        }
+
+        @Override
+        public String toString() {
+            return "ListViewItem [mDrawableId=" + mDrawableId + ", mName=" + mName + "]";
         }
 
     }
