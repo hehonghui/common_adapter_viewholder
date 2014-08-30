@@ -63,6 +63,7 @@ public class MainActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            // 获取ListView对象
             ListView listView = (ListView) rootView.findViewById(R.id.my_listview);
             // 设置CommonAdapter
             listView.setAdapter(new CommonAdapter<ListViewItem>(getActivity(),
@@ -79,6 +80,11 @@ public class MainActivity extends ActionBarActivity {
             return rootView;
         }
 
+        /**
+         * 模拟一些数据
+         * 
+         * @return
+         */
         private List<ListViewItem> mockListViewItems() {
             List<ListViewItem> dataItems = new ArrayList<MainActivity.ListViewItem>();
             dataItems.add(new ListViewItem(R.drawable.girl_96, "girl_96.png"));
@@ -90,6 +96,8 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /**
+     * ListView的每一项对应的数据项实体
+     * 
      * @author mrsimple
      */
     static class ListViewItem {

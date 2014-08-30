@@ -1,8 +1,6 @@
 common_adapter_viewholder
 =========================
 
-common_adapter_viewholder
-
 
 # CommonAdapter的使用
 
@@ -63,6 +61,7 @@ public static class PlaceholderFragment extends Fragment {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            // 获取ListView实例
             ListView listView = (ListView) rootView.findViewById(R.id.my_listview);
             // 设置CommonAdapter,泛型参数为ListViewImte
             listView.setAdapter(new CommonAdapter<ListViewItem>(getActivity(),
@@ -78,7 +77,8 @@ public static class PlaceholderFragment extends Fragment {
             });
             return rootView;
         }
-
+	
+		// 模拟一些数据
         private List<ListViewItem> mockListViewItems() {
             List<ListViewItem> dataItems = new ArrayList<MainActivity.ListViewItem>();
             dataItems.add(new ListViewItem(R.drawable.girl_96, "girl_96.png"));
@@ -90,6 +90,7 @@ public static class PlaceholderFragment extends Fragment {
     }
 
     /**
+     * ListView每项对应的数据项
      * @author mrsimple
      */
     static class ListViewItem {
