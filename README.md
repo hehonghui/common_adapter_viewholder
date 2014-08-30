@@ -128,3 +128,31 @@ MainActivity的onCreate方法 :
 ## 运行demo看效果吧 
 	   
 
+## ViewFinder的使用
+
+  ViewFinder是一个在一个布局中找某个子控件的工具类,用户需要在使用时调用ViewFinder.initContentView函数来初始化ContentView，参数为Context和布局id。然后使用ViewFinder.findViewById来获取需要的view,findViewById为泛型方法,返回的view则直接是你接收的类型,而不需要进行强制类型转换.比如,以前我们在Activity中找一些子控件一般是这样 : 
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        //  查找子控件
+        TextView textView = (TextView)findViewById(R.id.my_textview); 
+ 		ImageView imageView = (ImageView)findViewById(R.id.my_imageview); 
+ 		ListView listView = (ListView)findViewById(R.id.my_listview);
+}
+```    
+   如果页面中的控件比较多，就会有很多的类型转换,而使用ViewFinder则免去了类型转换,示例如下 : 
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        // 初始化
+        ViewFinder.initContentView(this, R.layout.activity_main) ;
+        // 查找子控件
+        TextView textView = ViewFinder.findViewById(R.id.my_textview); 
+ 		ImageView imageView = ViewFinder.findViewById(R.id.my_imageview); 
+ 		ListView listView = ViewFinder.findViewById(R.id.my_listview);
+}
+```      
