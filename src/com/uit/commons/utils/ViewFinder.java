@@ -41,11 +41,9 @@ import android.view.View;
  * view finder, 方便查找View。用户需要在使用时调用initContentView，
  * 将Context和布局id传进来，然后使用findViewById来获取需要的view
  * ,findViewById为泛型方法,返回的view则直接是你接收的类型,而不需要进行强制类型转换.比如,
- * 以前我们在Activity中找一个TextView一般是这样 : 
- * TextView textView = (TextView)findViewById(viewId); 
- * 如果页面中的控件比较多，就会有很多的类型转换,而使用ViewFinder则免去了类型转换,
- * 示例如下 : 
- * TextView textView = ViewFinder.findViewById(viewId);
+ * 以前我们在Activity中找一个TextView一般是这样 : TextView textView =
+ * (TextView)findViewById(viewId); 如果页面中的控件比较多，就会有很多的类型转换,而使用ViewFinder则免去了类型转换,
+ * 示例如下 : TextView textView = ViewFinder.findViewById(viewId);
  * 
  * @author mrsimple
  */
@@ -65,6 +63,15 @@ public final class ViewFinder {
      * Content View
      */
     static View mContentView;
+
+    /**
+     * 设置Content View
+     * 
+     * @param contentView 页面的Content View
+     */
+    public static void initContentView(View contentView) {
+        mContentView = contentView;
+    }
 
     /**
      * 初始化ViewFinder, 实际上是获取到该页面的ContentView.

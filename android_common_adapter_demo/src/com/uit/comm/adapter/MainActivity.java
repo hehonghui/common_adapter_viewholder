@@ -86,7 +86,7 @@ public class MainActivity extends ActionBarActivity {
                     // 设置图片
                     viewHolder.setImageForView(R.id.my_imageview, item.mDrawableId);
                     // 设置text
-                    viewHolder.setTextForTextView(R.id.my_textview, item.mName);
+                    viewHolder.setTextForTextView(R.id.my_textview, item.mText);
                 }
             });
             listView.setOnItemClickListener(new OnItemClickListener() {
@@ -108,38 +108,13 @@ public class MainActivity extends ActionBarActivity {
          * @return
          */
         private List<ListViewItem> mockListViewItems() {
-            List<ListViewItem> dataItems = new ArrayList<MainActivity.ListViewItem>();
+            List<ListViewItem> dataItems = new ArrayList<ListViewItem>();
             dataItems.add(new ListViewItem(R.drawable.girl_96, "girl_96.png"));
             dataItems.add(new ListViewItem(R.drawable.fire_96, "fire_96.png"));
             dataItems.add(new ListViewItem(R.drawable.grimace_96, "grimace_96.png"));
             dataItems.add(new ListViewItem(R.drawable.laugh_96, "laugh_96.png"));
             return dataItems;
         }
-    }
-
-    /**
-     * ListView的每一项对应的数据项实体
-     * 
-     * @author mrsimple
-     */
-    static class ListViewItem {
-        public int mDrawableId;
-        public String mName;
-
-        /**
-         * @param id
-         * @param name
-         */
-        public ListViewItem(int id, String name) {
-            mDrawableId = id;
-            mName = name;
-        }
-
-        @Override
-        public String toString() {
-            return "ListViewItem [mDrawableId=" + mDrawableId + ", mName=" + mName + "]";
-        }
-
     }
 
 }

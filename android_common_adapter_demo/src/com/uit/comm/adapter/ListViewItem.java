@@ -1,6 +1,6 @@
 /**
  *
- *	created by Mr.Simple, Aug 30, 20149:02:16 PM.
+ *	created by Mr.Simple, Aug 30, 20149:36:42 PM.
  *	Copyright (c) 2014, hehonghui@umeng.com All Rights Reserved.
  *
  *                #####################################################
@@ -32,75 +32,28 @@
 
 package com.uit.comm.adapter;
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
+/**
+ * ListView的每一项对应的数据项实体
+ * 
+ * @author mrsimple
+ */
+public class ListViewItem {
 
-import java.util.List;
-
-public class NormalAdapter extends BaseAdapter {
-
-    Context mContext;
-
-    LayoutInflater mInflater;
-
-    List<ListViewItem> mDataList;
+    public int mDrawableId;
+    public String mText;
 
     /**
-     * @param context
-     * @param data
+     * @param id
+     * @param name
      */
-    public NormalAdapter(Context context, List<ListViewItem> data) {
-        mContext = context;
-        mInflater = LayoutInflater.from(context);
-        mDataList = data;
+    public ListViewItem(int id, String name) {
+        mDrawableId = id;
+        mText = name;
     }
 
     @Override
-    public int getCount() {
-        return mDataList.size();
-    }
-
-    @Override
-    public ListViewItem getItem(int position) {
-        return mDataList.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = null;
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.listview_item_layout, null, false);
-            viewHolder = new ViewHolder();
-            viewHolder.mImageView = (ImageView) convertView.findViewById(R.id.my_imageview);
-            viewHolder.mTextView = (TextView) convertView.findViewById(R.id.my_textview);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-
-        viewHolder.mImageView.setImageResource(getItem(position).mDrawableId);
-        viewHolder.mTextView.setText(getItem(position).mText);
-        return convertView;
-    }
-
-    /**
-     * ViewHolder
-     * 
-     * @author mrsimple
-     */
-    static class ViewHolder {
-        ImageView mImageView;
-        TextView mTextView;
+    public String toString() {
+        return "ListViewItem [mDrawableId=" + mDrawableId + ", mText=" + mText + "]";
     }
 
 }
