@@ -71,6 +71,12 @@ public final class ViewFinder {
      */
     public static void initContentView(View contentView) {
         mContentView = contentView;
+        if (mContentView == null) {
+            throw new RuntimeException(
+                    "ViewFinder init failed, mContentView == null.");
+        }
+
+        mViewMap.clear();
     }
 
     /**
@@ -82,10 +88,7 @@ public final class ViewFinder {
     public static void initContentView(Context context, int layoutId) {
         mInflater = LayoutInflater.from(context);
         mContentView = mInflater.inflate(layoutId, null, false);
-        if (mInflater == null || mContentView == null) {
-            throw new RuntimeException(
-                    "ViewFinder init failed, mInflater == null || mContentView == null.");
-        }
+        initContentView(mContentView);
     }
 
     /**
