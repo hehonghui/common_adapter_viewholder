@@ -61,10 +61,7 @@ public final class ViewFinder {
     /**
      * 每项的View的sub view Map
      */
-    // private static WeakHashMap<Integer, View> mViewMap = new
-    // WeakHashMap<Integer, View>();
-
-    private static SparseArray<View> mViewMap = new SparseArray<View>();
+    private static SparseArray<WeakReference<View>> mViewMap = new SparseArray<WeakReference<View>>();
     /**
      * Root View的弱引用, 不会阻止View对象被释放
      */
@@ -129,11 +126,18 @@ public final class ViewFinder {
      */
     @SuppressWarnings("unchecked")
     public static <T extends View> T findViewById(int viewId) {
+
         // 先从view map中查找,如果有的缓存的话直接使用,否则再从mContentView中找
-        View targetView = mViewMap.get(viewId);
+        View targetView = null;
+        // get from weak reference
+        WeakReference<View> viewWrf = mViewMap.get(viewId);
+        if (viewWrf != null) {
+            targetView = viewWrf.get();
+        }
+
         if (targetView == null && mRootView != null && mRootView.get() != null) {
             targetView = mRootView.get().findViewById(viewId);
-            mViewMap.put(viewId, targetView);
+            mViewMap.put(viewId, new WeakReference<View>(targetView));
         }
 
         Log.d("", "### find view = " + targetView);
