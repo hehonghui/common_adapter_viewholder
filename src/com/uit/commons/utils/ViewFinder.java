@@ -33,9 +33,13 @@
 package com.uit.commons.utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+
+import java.lang.ref.WeakReference;
 
 /**
  * view finder, 方便查找View。用户需要在使用时调用initContentView，
@@ -50,9 +54,9 @@ import android.view.View;
 public final class ViewFinder {
 
     /**
-     * LayoutInflater
+     * 
      */
-    private static LayoutInflater mInflater;
+    public static boolean DEBUG = false;
 
     /**
      * 每项的View的sub view Map
@@ -64,7 +68,7 @@ public final class ViewFinder {
     /**
      * Root View的弱引用, 不会阻止View对象被释放
      */
-    private static/* WeakReference<View> */View mRootView;
+    private static WeakReference<View> mRootView;
 
     /**
      * 设置Content View
@@ -78,14 +82,10 @@ public final class ViewFinder {
                     "ViewFinder init failed, mContentView == null.");
         }
 
-        // mRootView = new WeakReference<View>(contentView);
-        // 与保存的root view不一样则清除缓存的view id
-        // if (contentView != mRootView.get()) {
-        // mViewMap.clear();
-        // }
-
-        mRootView = contentView;
+        mRootView = new WeakReference<View>(contentView);
+        // 每次清除缓存的view id
         mViewMap.clear();
+
     }
 
     /**
@@ -95,16 +95,32 @@ public final class ViewFinder {
      * @param layoutId
      */
     public static void initContentView(Context context, int layoutId) {
-        mInflater = LayoutInflater.from(context);
-        View rootView = mInflater.inflate(layoutId, null, false);
+        initContentView(context, null, layoutId);
+    }
+
+    /**
+     * @param context 上下文环境那个
+     * @param parent 父组件 ( ViewGroup )
+     * @param layoutId 布局id
+     */
+    public static void initContentView(Context context, ViewGroup parent, int layoutId) {
+        if (context == null || layoutId <= 0) {
+            throw new RuntimeException(
+                    "initContentView invalid params, context == null || layoutId == -1.");
+        }
+        // inflate the root view
+        View rootView = LayoutInflater.from(context).inflate(layoutId, parent, false);
+        //
         initContentView(rootView);
     }
 
     /**
+     * 返回顶级视图
+     * 
      * @return
      */
     public static View getContentView() {
-        return mRootView;
+        return mRootView.get();
     }
 
     /**
@@ -115,10 +131,12 @@ public final class ViewFinder {
     public static <T extends View> T findViewById(int viewId) {
         // 先从view map中查找,如果有的缓存的话直接使用,否则再从mContentView中找
         View targetView = mViewMap.get(viewId);
-        if (targetView == null && mRootView != null) {
-            targetView = mRootView.findViewById(viewId);
+        if (targetView == null && mRootView != null && mRootView.get() != null) {
+            targetView = mRootView.get().findViewById(viewId);
             mViewMap.put(viewId, targetView);
         }
-        return targetView == null ? null : (T) mRootView.findViewById(viewId);
+
+        Log.d("", "### find view = " + targetView);
+        return targetView == null ? null : (T) targetView;
     }
 }
