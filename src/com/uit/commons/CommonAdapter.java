@@ -123,7 +123,7 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // 获取ViewHolder
-        CommonViewHolder viewHolder = CommonViewHolder.getViewHolder(mContext, convertView,
+        CommonViewHolder viewHolder = CommonViewHolder.getViewHolder(mContext, convertView, parent,
                 mItemLayoutId);
         // 填充数据
         fillItemData(viewHolder, getItem(position));

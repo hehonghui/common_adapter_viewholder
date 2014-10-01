@@ -52,17 +52,19 @@ public final class ViewFinder {
     /**
      * LayoutInflater
      */
-    static LayoutInflater mInflater;
+    private static LayoutInflater mInflater;
 
     /**
      * 每项的View的sub view Map
      */
-    private static SparseArray<View> mViewMap = new SparseArray<View>();
+    // private static WeakHashMap<Integer, View> mViewMap = new
+    // WeakHashMap<Integer, View>();
 
+    private static SparseArray<View> mViewMap = new SparseArray<View>();
     /**
-     * Content View
+     * Root View的弱引用, 不会阻止View对象被释放
      */
-    static View mContentView;
+    private static/* WeakReference<View> */View mRootView;
 
     /**
      * 设置Content View
@@ -70,12 +72,19 @@ public final class ViewFinder {
      * @param contentView 页面的Content View
      */
     public static void initContentView(View contentView) {
-        mContentView = contentView;
-        if (mContentView == null) {
+
+        if (contentView == null) {
             throw new RuntimeException(
                     "ViewFinder init failed, mContentView == null.");
         }
 
+        // mRootView = new WeakReference<View>(contentView);
+        // 与保存的root view不一样则清除缓存的view id
+        // if (contentView != mRootView.get()) {
+        // mViewMap.clear();
+        // }
+
+        mRootView = contentView;
         mViewMap.clear();
     }
 
@@ -87,15 +96,15 @@ public final class ViewFinder {
      */
     public static void initContentView(Context context, int layoutId) {
         mInflater = LayoutInflater.from(context);
-        mContentView = mInflater.inflate(layoutId, null, false);
-        initContentView(mContentView);
+        View rootView = mInflater.inflate(layoutId, null, false);
+        initContentView(rootView);
     }
 
     /**
      * @return
      */
     public static View getContentView() {
-        return mContentView;
+        return mRootView;
     }
 
     /**
@@ -105,11 +114,11 @@ public final class ViewFinder {
     @SuppressWarnings("unchecked")
     public static <T extends View> T findViewById(int viewId) {
         // 先从view map中查找,如果有的缓存的话直接使用,否则再从mContentView中找
-        View tagetView = mViewMap.get(viewId);
-        if (tagetView == null) {
-            tagetView = mContentView.findViewById(viewId);
-            mViewMap.put(viewId, tagetView);
+        View targetView = mViewMap.get(viewId);
+        if (targetView == null && mRootView != null) {
+            targetView = mRootView.findViewById(viewId);
+            mViewMap.put(viewId, targetView);
         }
-        return tagetView == null ? null : (T) mContentView.findViewById(viewId);
+        return targetView == null ? null : (T) mRootView.findViewById(viewId);
     }
 }

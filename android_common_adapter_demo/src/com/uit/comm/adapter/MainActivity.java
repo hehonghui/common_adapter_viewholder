@@ -109,10 +109,11 @@ public class MainActivity extends ActionBarActivity {
          */
         private List<ListViewItem> mockListViewItems() {
             List<ListViewItem> dataItems = new ArrayList<ListViewItem>();
-            dataItems.add(new ListViewItem(R.drawable.girl_96, "girl_96.png"));
-            dataItems.add(new ListViewItem(R.drawable.fire_96, "fire_96.png"));
-            dataItems.add(new ListViewItem(R.drawable.grimace_96, "grimace_96.png"));
-            dataItems.add(new ListViewItem(R.drawable.laugh_96, "laugh_96.png"));
+
+            for (int i = 0; i < 20; i++) {
+                dataItems.add(new ListViewItem(R.drawable.girl_96, "图片 - " + i));
+            }
+
             return dataItems;
         }
     }

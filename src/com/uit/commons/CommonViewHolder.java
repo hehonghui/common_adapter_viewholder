@@ -34,7 +34,9 @@ package com.uit.commons;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,6 +50,10 @@ import com.uit.commons.utils.ViewFinder;
  * @author mrsimple
  */
 public class CommonViewHolder {
+    /**
+     * 
+     */
+    private View mContentView;
 
     /**
      * 构造函数
@@ -55,11 +61,9 @@ public class CommonViewHolder {
      * @param context Context
      * @param layoutId ListView、GridView或者其他AbsListVew子类的 Item View的资源布局id
      */
-    protected CommonViewHolder(Context context, int layoutId) {
-        // 初始化布局, 装载ContentView
-        ViewFinder.initContentView(context, layoutId);
-        // 将ViewHolder存储在ContentView的tag中
-        ViewFinder.getContentView().setTag(this);
+    protected CommonViewHolder(Context context, ViewGroup parent, int layoutId) {
+        mContentView = LayoutInflater.from(context).inflate(layoutId, parent, false);
+        mContentView.setTag(this);
     }
 
     /**
@@ -71,19 +75,28 @@ public class CommonViewHolder {
      * @param layoutId 布局资源id, 例如R.layout.my_listview_item.
      * @return 通用的CommonViewHolder实例
      */
-    public static CommonViewHolder getViewHolder(Context context, View convertView, int layoutId) {
+    public static CommonViewHolder getViewHolder(Context context, View convertView,
+            ViewGroup parent, int layoutId) {
+
+        context = (context == null && parent != null) ? parent.getContext() : context;
+        CommonViewHolder viewHolder = null;
         if (convertView == null) {
-            return new CommonViewHolder(context, layoutId);
+            viewHolder = new CommonViewHolder(context, parent, layoutId);
+        } else {
+            viewHolder = (CommonViewHolder) convertView.getTag();
         }
 
-        return (CommonViewHolder) convertView.getTag();
+        // 将当前item view设置为ViewFinder要查找的root view, 这一步不能搞错，否则查找不到对象的view
+        ViewFinder.initContentView(viewHolder.getConvertView());
+
+        return viewHolder;
     }
 
     /**
      * @return 当前项的convertView, 在构造函数中装载
      */
     public View getConvertView() {
-        return ViewFinder.getContentView();
+        return mContentView;
     }
 
     /**
