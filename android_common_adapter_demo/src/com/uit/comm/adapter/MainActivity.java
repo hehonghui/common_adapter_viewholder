@@ -82,7 +82,8 @@ public class MainActivity extends ActionBarActivity {
                     R.layout.listview_item_layout, mockListViewItems()) {
 
                 @Override
-                protected void fillItemData(CommonViewHolder viewHolder, ListViewItem item) {
+                protected void fillItemData(CommonViewHolder viewHolder, int position,
+                        ListViewItem item) {
                     // 设置图片
                     viewHolder.setImageForView(R.id.my_imageview, item.mDrawableId);
                     // 设置text

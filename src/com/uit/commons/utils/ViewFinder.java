@@ -143,4 +143,17 @@ public final class ViewFinder {
         Log.d("", "### find view = " + targetView);
         return targetView == null ? null : (T) targetView;
     }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends View> T findViewById(View rootView, int viewId) {
+
+        // 先从view map中查找,如果有的缓存的话直接使用,否则再从mContentView中找
+        View targetView = null;
+        // get from weak reference
+        if (rootView != null) {
+            targetView = rootView.findViewById(viewId);
+        }
+        Log.d("", "### find view = " + targetView);
+        return targetView == null ? null : (T) targetView;
+    }
 }

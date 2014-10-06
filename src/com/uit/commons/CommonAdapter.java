@@ -126,9 +126,9 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
         CommonViewHolder viewHolder = CommonViewHolder.getViewHolder(mContext, convertView, parent,
                 mItemLayoutId);
         // 填充数据
-        fillItemData(viewHolder, getItem(position));
+        fillItemData(viewHolder, position, getItem(position));
         // 返回convertview
-        return viewHolder.getConvertView();
+        return viewHolder.getContentView();
     }
 
     /**
@@ -138,6 +138,6 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
      *            gridview等组件的每一项的视图，并且缓存其子view
      * @param item 数据源的第position项数据
      */
-    protected abstract void fillItemData(CommonViewHolder viewHolder, T item);
+    protected abstract void fillItemData(CommonViewHolder viewHolder, int position, T item);
 
 }

@@ -36,6 +36,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -87,7 +89,7 @@ public class CommonViewHolder {
         }
 
         // 将当前item view设置为ViewFinder要查找的root view, 这一步不能搞错，否则查找不到对象的view
-        ViewFinder.initContentView(viewHolder.getConvertView());
+        // ViewFinder.initContentView(viewHolder.getContentView());
 
         return viewHolder;
     }
@@ -95,7 +97,7 @@ public class CommonViewHolder {
     /**
      * @return 当前项的convertView, 在构造函数中装载
      */
-    public View getConvertView() {
+    public View getContentView() {
         return mContentView;
     }
 
@@ -106,7 +108,7 @@ public class CommonViewHolder {
      * @param text 要设置的文本内容
      */
     public void setTextForTextView(int textViewId, CharSequence text) {
-        TextView textView = ViewFinder.findViewById(textViewId);
+        TextView textView = ViewFinder.findViewById(mContentView, textViewId);
         if (textView != null) {
             textView.setText(text);
         }
@@ -119,7 +121,7 @@ public class CommonViewHolder {
      * @param drawableId Drawable图片的id, 例如R.drawable.my_photo
      */
     public void setImageForView(int imageViewId, int drawableId) {
-        ImageView imageView = ViewFinder.findViewById(imageViewId);
+        ImageView imageView = ViewFinder.findViewById(mContentView, imageViewId);
         if (imageView != null) {
             imageView.setImageResource(drawableId);
         }
@@ -132,7 +134,7 @@ public class CommonViewHolder {
      * @param bmp Bitmap图片
      */
     public void setImageForView(int imageViewId, Bitmap bmp) {
-        ImageView imageView = ViewFinder.findViewById(imageViewId);
+        ImageView imageView = ViewFinder.findViewById(mContentView, imageViewId);
         if (imageView != null) {
             imageView.setImageBitmap(bmp);
         }
@@ -145,9 +147,42 @@ public class CommonViewHolder {
      * @param isCheck 是否选中
      */
     public void setCheckForCheckBox(int checkViewId, boolean isCheck) {
-        CheckBox checkBox = ViewFinder.findViewById(checkViewId);
+        CheckBox checkBox = ViewFinder.findViewById(mContentView, checkViewId);
         if (checkBox != null) {
             checkBox.setChecked(isCheck);
+        }
+    }
+
+    /**
+     * @param viewId
+     * @param visibility
+     */
+    public void setVisibility(int viewId, int visibility) {
+        View view = ViewFinder.findViewById(mContentView, viewId);
+        if (view != null) {
+            view.setVisibility(visibility);
+        }
+    }
+
+    /**
+     * @param viewId
+     * @param listener
+     */
+    public void setOnClickListener(int viewId, OnClickListener listener) {
+        View view = ViewFinder.findViewById(mContentView, viewId);
+        if (view != null) {
+            view.setOnClickListener(listener);
+        }
+    }
+
+    /**
+     * @param viewId
+     * @param listener
+     */
+    public void setOnTouchListener(int viewId, OnTouchListener listener) {
+        View view = ViewFinder.findViewById(mContentView, viewId);
+        if (view != null) {
+            view.setOnTouchListener(listener);
         }
     }
 }
