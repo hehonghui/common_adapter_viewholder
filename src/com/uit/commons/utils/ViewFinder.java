@@ -63,7 +63,8 @@ public final class ViewFinder {
      */
     private static SparseArray<WeakReference<View>> mViewMap = new SparseArray<WeakReference<View>>();
     /**
-     * Root View的弱引用, 不会阻止View对象被释放
+     * Root View的弱引用,
+     * 不会阻止View对象被释放。如果该mRootView没有被外部引用，那么在重新设置了rootView之后老的rootview会被释放.
      */
     private static WeakReference<View> mRootView;
 
@@ -79,6 +80,7 @@ public final class ViewFinder {
                     "ViewFinder init failed, mContentView == null.");
         }
 
+        //
         mRootView = new WeakReference<View>(contentView);
         // 每次清除缓存的view id
         mViewMap.clear();
@@ -155,5 +157,20 @@ public final class ViewFinder {
         }
         Log.d("", "### find view = " + targetView);
         return targetView == null ? null : (T) targetView;
+    }
+
+    /**
+     * 清理Views
+     */
+    public static void clear() {
+        if (mRootView != null) {
+            mRootView.clear();
+            mRootView = null;
+        }
+
+        if (mViewMap != null) {
+            mViewMap.clear();
+            mViewMap = null;
+        }
     }
 }
